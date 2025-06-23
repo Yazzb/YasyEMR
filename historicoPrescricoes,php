@@ -1,0 +1,48 @@
+<?php
+include 'conexao.php';
+
+$paciente_id = $_GET['id'];
+
+// Buscar nome do paciente
+$sql_paciente = "SELECT nome FROM pacientes WHERE id = $paciente_id";
+$paciente = $conn->query($sql_paciente)->fetch_assoc();
+
+// Buscar prescrições
+$sql = "SELECT * FROM prescricoes WHERE paciente_id = $paciente_id ORDER BY data_prescricao DESC";
+$result = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Prescrições</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+
+    <h1>Histórico de Prescrições - <?php echo $paciente['nome']; ?></h1>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Medicamento</th>
+                <th>Dosagem</th>
+                <th>Data da Prescrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo $row['medicamento']; ?></td>
+                    <td><?php echo $row['dosagem']; ?></td>
+                    <td><?php echo $row['data_prescricao']; ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+
+    <a href="prontuario.php?id=<?php echo $paciente_id; ?>" class="btn btn-secondary">Voltar</a>
+
+</body>
+</html>
